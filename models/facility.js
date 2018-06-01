@@ -8,7 +8,7 @@ module.exports = function (sequelize, DataTypes) {
 
     Facility.associate = function (models) {
         Facility.hasMany(models.Chemical, {
-            onDelete: "cascade"
+            foreignKey: 'FACILITY_ID'
         });
     };
 

@@ -7,7 +7,9 @@ module.exports = function (sequelize, DataTypes) {
     });
 
     Chemical.associate = function (models) {
-        Chemical.belongsTo(models.Facility);
+        Chemical.belongsTo(models.Facility, {
+            foreignKey: 'FACILITY_ID'
+        });
     };
     return Chemical;
 };
