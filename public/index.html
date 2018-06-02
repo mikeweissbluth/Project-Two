@@ -22,7 +22,7 @@
     <script>
         function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 13,
+      zoom: 14,
       center: {lat: 41.8781, lng: -87.6298},
       styles: [
     {
@@ -407,29 +407,30 @@
     $.get("/api/all", function(data) {
       
       // console.log("Facilities ID: ", data[0].FACILITY_ID);
-      // console.log("Facilities Name: ", data[0].FACILITY_NAME);
-      var fac_name = data[1].FACILITY_NAME;
-      var fac_lat = parseFloat(data[1].LATITUDE);
-      var fac_lon = parseFloat(data[1].LONGITUDE);
-      console.log("Facilities Name: ", fac_name);
-      console.log("Facilities Latitude: ", fac_lat);
-      console.log("Facilities Longitude: ", fac_lon);
-      var new_facility = [];
-      new_facility.push(fac_name, fac_lat, fac_lon);
-      console.log("New Facility: " + new_facility);
-      facilities.push(new_facility);
-      console.log("Facilities now is: " + facilities);
 
-      for (var i = 0; i < facilities.length; i++) {
-      var facility = facilities[i];
-      var marker = new google.maps.Marker({
-        position: {lat: facility[1], lng: facility[2]},
-        map: map,
-        icon: image,
-        shape: shape,
-        title: facility[0],
-        zIndex: facility[3]
-      });
+      for (var i = 0; i < data.length; i++) {
+        // var facility = facilities[i];
+        var fac_name = data[i].FACILITY_NAME;
+        var fac_lat = parseFloat(data[i].LATITUDE);
+        var fac_lon = parseFloat(data[i].LONGITUDE);
+
+        console.log("Facilities Name: ", fac_name);
+        console.log("Facilities Latitude: ", fac_lat);
+        console.log("Facilities Longitude: ", fac_lon);
+        var new_facility = [];
+        new_facility.push(fac_name, fac_lat, fac_lon);
+        console.log("New Facility: " + new_facility);
+        facilities.push(new_facility);
+        console.log("Facilities now is: " + facilities);
+
+        var marker = new google.maps.Marker({
+          position: {lat: fac_lat, lng: fac_lon},
+          map: map,
+          icon: image,
+          shape: shape,
+          title: fac_name,
+          // zIndex: facility[3]
+        });
     }
 
     });
