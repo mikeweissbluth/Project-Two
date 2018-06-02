@@ -11,7 +11,17 @@ module.exports = function(sequelize, DataTypes) {
       no: {
         type: DataTypes.INTEGER,
         allowNull: true,
-      }
+      },
+
+      // Timestamps
+      // Date only saves as: YYYY-MM-DD
+        createdAt: {
+            type: DataTypes.DATEONLY,
+        },
+
+        updatedAt: {
+            type: DataTypes.DATEONLY,
+        }
     });
     return Neighbor;
   };
