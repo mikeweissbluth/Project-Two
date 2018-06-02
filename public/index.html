@@ -363,14 +363,15 @@
    
   // Data for the markers consisting of a name, a LatLng and a zIndex for the
   // order in which these markers should display on top of each other.
-  var facilities = [
-    ['Lakeside Lithography', 41.85941, -87.66467, 4],
-    ['EMPIRE HARD CHROME INC', 41.86032, -87.67112, 5],
-    ['BLOMMER CHOCOLATE CO', 41.88941, -87.64365, 3],
-    ['OSCAR MAYER FOODS CORP CHICAGO PLANT', 41.904937, -87.638382, 2],
-    ['UNITY MANUFACTURING CO', 41.90492, -87.64198, 1]
-  ];
-    console.log(facilities);
+  // var facilities = [
+  //   ['Lakeside Lithography', 41.85941, -87.66467, 4],
+  //   ['EMPIRE HARD CHROME INC', 41.86032, -87.67112, 5],
+  //   ['BLOMMER CHOCOLATE CO', 41.88941, -87.64365, 3],
+  //   ['OSCAR MAYER FOODS CORP CHICAGO PLANT', 41.904937, -87.638382, 2],
+  //   ['UNITY MANUFACTURING CO', 41.90492, -87.64198, 1]
+  // ];
+    var facilities = [];
+    // console.log(facilities);
   
   function setMarkers(map) {
     // Adds markers to the map.
@@ -404,11 +405,22 @@
     };
 
     $.get("/api/all", function(data) {
-      console.log("Facilities", data);
+      
+      // console.log("Facilities ID: ", data[0].FACILITY_ID);
+      // console.log("Facilities Name: ", data[0].FACILITY_NAME);
+      var fac_name = data[1].FACILITY_NAME;
+      var fac_lat = parseFloat(data[1].LATITUDE);
+      var fac_lon = parseFloat(data[1].LONGITUDE);
+      console.log("Facilities Name: ", fac_name);
+      console.log("Facilities Latitude: ", fac_lat);
+      console.log("Facilities Longitude: ", fac_lon);
+      var new_facility = [];
+      new_facility.push(fac_name, fac_lat, fac_lon);
+      console.log("New Facility: " + new_facility);
+      facilities.push(new_facility);
+      console.log("Facilities now is: " + facilities);
 
-    });
-
-    for (var i = 0; i < facilities.length; i++) {
+      for (var i = 0; i < facilities.length; i++) {
       var facility = facilities[i];
       var marker = new google.maps.Marker({
         position: {lat: facility[1], lng: facility[2]},
@@ -419,6 +431,10 @@
         zIndex: facility[3]
       });
     }
+
+    });
+
+    
 
 }
     </script>
