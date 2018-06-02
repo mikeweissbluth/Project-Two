@@ -14,9 +14,9 @@ module.exports = function(app) {
  
   // Get route for retrieving a single post
   app.get("/api/neighbor/:locationId", function(req, res) {
-    db.Post.findOne({
+    db.Neighbor.findAll({
       where: {
-        locationId: req.params.id
+        locationId: req.params.locationId
       }
     })
       .then(function(dbNeighbor) {
