@@ -1,6 +1,7 @@
 // Dependencies
 // =============================================================
 var connection = require("../config/connection.js");
+var _ = require('lodash');
 
 module.exports = function (app) {
     app.get("/api/all", function (request, response) {
@@ -9,6 +10,11 @@ module.exports = function (app) {
       if (err) throw err;
       //console.log(result);
       response.json(result);
+      _.uniq(json.result, function(item, key, a) { 
+        return item.a;
+        console.log(item.a);
+    });
+
     });
 
     });
