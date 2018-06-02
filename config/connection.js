@@ -9,9 +9,10 @@ var mysql = require("mysql");
 var connection = mysql.createConnection({
   port: 3306,
   host: "localhost",
-  user: "Karen",
-  password: "test827",
-  database: "environment_db"
+  user: "root",
+  password: "root",
+  database: "environment_db",
+  multipleStatements: true
 });
 
 
