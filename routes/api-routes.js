@@ -25,13 +25,15 @@ module.exports = function (app) {
                     value.CHEM_NAME = [value.CHEM_NAME];
                     output.push(value);
                 }
+                
             });
-
-            console.dir(output);
+            
+            // console.dir(output);
+            response.json(output);
            
             
         });
-
+            // response.json(output);
         
     });
 
