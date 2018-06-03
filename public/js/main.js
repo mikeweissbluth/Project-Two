@@ -372,37 +372,58 @@ function initMap() {
     $.get("/api/all", function(data) {
 
         for (var i = 0; i < data.length; i++) {
+            function createMarkerPlumbing() { 
+                var fac_name = data[i].FACILITY_NAME;
+                var fac_lat = parseFloat(data[i].LATITUDE);
+                var fac_lon = parseFloat(data[i].LONGITUDE);
+                var fac_chem = data[i].CHEM_NAME;
+                function fac_chem_str() {
+                    if (fac_chem) {
+                        return fac_chem.toString();
+                    }
+                    else {
+                        return "None reported";
+                    }
+                }
 
-        var fac_name = data[i].FACILITY_NAME;
-        var fac_lat = parseFloat(data[i].LATITUDE);
-        var fac_lon = parseFloat(data[i].LONGITUDE);
+                // Console Logs for testing:
+                console.log("Facilities Name: ", fac_name);
+                // console.log("Facilities Latitude: ", fac_lat);
+                // console.log("Facilities Longitude: ", fac_lon);
+                console.log(fac_chem_str());
+                // console.log(typeof fac_chem);
 
-        // Console Logs for testing:
-        // console.log("Facilities Name: ", fac_name);
-        // console.log("Facilities Latitude: ", fac_lat);
-        // console.log("Facilities Longitude: ", fac_lon);
+                // An array to store name, lat & lon for each facility in our db.
+                var new_facility = [];
+                // Add the current facility data to that empty array.
+                new_facility.push(fac_name, fac_lat, fac_lon);
+                // console.log("New Facility: " + new_facility);
+                // Add the new facility to our big facilities array - the facilities array will contain all of our facilities.
+                facilities.push(new_facility);
 
-        // An array to store name, lat & lon for each facility.
-        var new_facility = [];
-        // Add the current facility data to that empty array.
-        new_facility.push(fac_name, fac_lat, fac_lon);
-        console.log("New Facility: " + new_facility);
-        // Add the new facility to our big facilities array - the facilities array will contain all of our facilities.
-        facilities.push(new_facility);
+                // console.log("Facilities currently are: " + facilities);
 
-        // console.log("Facilities currently are: " + facilities);
+                var popUpContent = '<h1>' + fac_name + '</h1><br>'+ '<h4>Chemicals:</h4><p>' + fac_chem_str() + '</p>';
 
-        // This creates a marker for every new facility.
-        var marker = new google.maps.Marker({
-            position: {lat: fac_lat, lng: fac_lon},
-            map: map,
-            icon: './../images/orange-diamond-85.ico',
-            shape: shape,
-            title: fac_name,
-            // zIndex: facility[3]
-        });
-    }
+                var infoWindow = new google.maps.InfoWindow({
+                    content: popUpContent
+                });
 
+                // This creates a marker for every new facility.
+                var marker = new google.maps.Marker({
+                    position: {lat: fac_lat, lng: fac_lon},
+                    map: map,
+                    icon: './../images/orange-diamond-85.ico',
+                    shape: shape,
+                    title: fac_name,
+                    // zIndex: facility[3]
+                });
+                marker.addListener('click', function() {
+                    infoWindow.open(map, marker);
+                });
+            }
+            createMarkerPlumbing();
+        }
     });
 
 }
