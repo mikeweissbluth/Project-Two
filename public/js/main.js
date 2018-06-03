@@ -372,6 +372,7 @@ function initMap() {
     $.get("/api/all", function(data) {
 
         for (var i = 0; i < data.length; i++) {
+            // Wrap the marker creation in a function so everything stays in scope.
             function createMarkerPlumbing() { 
                 var fac_name = data[i].FACILITY_NAME;
                 var fac_lat = parseFloat(data[i].LATITUDE);
