@@ -20,11 +20,16 @@ module.exports = function (app) {
                 if (existing.length) {
                     var existingIndex = output.indexOf(existing[0]);
                     output[existingIndex].CHEM_NAME = output[existingIndex].CHEM_NAME.concat(value.CHEM_NAME);
+                    if(value.CARCINOGEN === 'Y'){
+                        output[existingIndex].CARCINOGEN = 'Y';}
+                    if(value.CLEAN_AIR === 'Y'){
+                        output[existingIndex].CLEAN_AIR = 'Y';}
                 } else {
                     if (typeof value.CHEM_NAME == 'string')
                     value.CHEM_NAME = [value.CHEM_NAME];
                     output.push(value);
                 }
+
                 
             });
             
