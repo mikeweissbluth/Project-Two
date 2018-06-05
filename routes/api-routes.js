@@ -5,7 +5,7 @@ var _ = require('lodash');
 
 module.exports = function (app) {
     app.get("/api/all", function (request, response) {
-        var dbQuery = "SELECT f.FACILITY_NAME, f.FACILITY_ID, f.LATITUDE, f.LONGITUDE, c.CHEM_NAME, c.CARCINOGEN, c.CLEAN_AIR FROM environment_db.facility_info f LEFT JOIN environment_db.chemical_info c ON f.FACILITY_ID = c.FACILITY_ID";
+        var dbQuery = "SELECT f.FACILITY_NAME, f.FACILITY_ID, f.LATITUDE, f.LONGITUDE, c.CHEM_NAME_FOR_URL, c.CARCINOGEN, c.CLEAN_AIR, c.HSDB_URL FROM environment_db.facility_info f LEFT JOIN environment_db.chemical_info c ON f.FACILITY_ID = c.FACILITY_ID";
         connection.query(dbQuery, function (err, result) {
             if (err) throw err;
             //console.log(result);
@@ -19,14 +19,16 @@ module.exports = function (app) {
                 });
                 if (existing.length) {
                     var existingIndex = output.indexOf(existing[0]);
-                    output[existingIndex].CHEM_NAME = output[existingIndex].CHEM_NAME.concat(value.CHEM_NAME);
+                    output[existingIndex].CHEM_NAME_FOR_URL = output[existingIndex].CHEM_NAME_FOR_URL.concat(value.CHEM_NAME_FOR_URL);
+                    output[existingIndex].HSDB_URL = output[existingIndex].HSDB_URL.concat(value.HSDB_URL);
                     if(value.CARCINOGEN === 'Y'){
                         output[existingIndex].CARCINOGEN = 'Y';}
                     if(value.CLEAN_AIR === 'Y'){
                         output[existingIndex].CLEAN_AIR = 'Y';}
                 } else {
-                    if (typeof value.CHEM_NAME == 'string')
-                    value.CHEM_NAME = [value.CHEM_NAME];
+                    if (typeof value.CHEM_NAME_FOR_URL == 'string' || typeof value.HSDB_URL == "string")
+                    value.CHEM_NAME_FOR_URL = [value.CHEM_NAME_FOR_URL];
+                    value.HSDB_URL=[value.HSDB_URL];
                     output.push(value);
                 }
 
