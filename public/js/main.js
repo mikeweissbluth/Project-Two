@@ -340,6 +340,22 @@ function initMap() {
   setMarkers(map);
 }
 
+  
+
+    // Function to update the neighbors
+    function updateNeighbor(facility_id) {
+      event.preventDefault();
+      var neighborPlusOne = {
+        locationId: facility_id,
+        yes: 1,
+        no: 0
+      }
+
+      // alert('You updated a neighbor for: ' + facility_id);
+      $.post("/api/neighbor/", neighborPlusOne, function() {
+        // window.location.href = "/";
+      });
+    };
     // This is the array that will store all of our facilities that our API brings back.
     var facilities = [];
     
@@ -374,10 +390,15 @@ function initMap() {
         for (var i = 0; i < data.length; i++) {
             // Wrap the marker creation in a function so everything stays in scope.
             function createMarkerPlumbing() { 
+                // Variables to store info from our API call.
+                var fac_id = data[i].FACILITY_ID;
                 var fac_name = data[i].FACILITY_NAME;
                 var fac_lat = parseFloat(data[i].LATITUDE);
                 var fac_lon = parseFloat(data[i].LONGITUDE);
                 var fac_chem = data[i].CHEM_NAME;
+                var fac_carcinogenic = data[i].CARCINOGEN;
+                var fac_neighbors;  
+                // Function to return the chemical array list as a string. If it's not a string, it will say 'None reported'.
                 function fac_chem_str() {
                     if (fac_chem) {
                         return fac_chem.toString();
@@ -386,6 +407,8 @@ function initMap() {
                         return "None reported";
                     }
                 }
+
+                
 
                 // Console Logs for testing:
                 console.log("Facilities Name: ", fac_name);
@@ -404,7 +427,7 @@ function initMap() {
 
                 // console.log("Facilities currently are: " + facilities);
 
-                var popUpContent = '<h1>' + fac_name + '</h1><br>'+ '<h4>Chemicals:</h4><p>' + fac_chem_str() + '</p>';
+                var popUpContent = '<h1>' + fac_name + '</h1><br>'+ '<h4>Chemicals:</h4><p>' + fac_chem_str() + '</p>' + '<h4>Any Chemicals Known Carcinogenic?</h4><br><p>' + fac_carcinogenic + '</p><br><h4>Facility ID:</h4><br><p>' + fac_id + '</p><br><h4>How many neighbors:</h4><br><p>' + '</p><br><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes?</button>';
 
                 var infoWindow = new google.maps.InfoWindow({
                     content: popUpContent
