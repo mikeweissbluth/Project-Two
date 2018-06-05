@@ -15,13 +15,16 @@ module.exports = function(sequelize, DataTypes) {
 
       // Timestamps
       // Date only saves as: YYYY-MM-DD
-        createdAt: {
-            type: DataTypes.DATEONLY,
-        },
-
-        updatedAt: {
-            type: DataTypes.DATEONLY,
-        }
+      createdAt: {
+        type: DataTypes.DATE(3),
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP(3)'),
+        field: 'created_at',
+      },
+      updatedAt: {
+        type: DataTypes.DATE(3),
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)'),
+        field: 'updated_at',
+      },
     });
     return Neighbor;
   };
