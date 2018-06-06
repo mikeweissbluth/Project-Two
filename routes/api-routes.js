@@ -5,7 +5,7 @@ var _ = require('lodash');
 
 module.exports = function (app) {
     app.get("/api/all", function (request, response) {
-        var dbQuery = "SELECT f.FACILITY_NAME, f.FACILITY_ID, f.LATITUDE, f.LONGITUDE, c.CHEM_NAME_FOR_URL, c.CARCINOGEN, c.CLEAN_AIR, c.HSDB_URL FROM environment_db.facility_info f LEFT JOIN environment_db.chemical_info c ON f.FACILITY_ID = c.FACILITY_ID";
+        var dbQuery = "SELECT f.FACILITY_NAME, f.FACILITY_ID, f.LATITUDE, f.LONGITUDE, f.FACILITY_COMPLIANCE_REPORT_URL, c.CHEM_NAME_FOR_URL, c.CARCINOGEN, c.CLEAN_AIR, c.HSDB_URL FROM environment_db.facility_info f LEFT JOIN environment_db.chemical_info c ON f.FACILITY_ID = c.FACILITY_ID";
         connection.query(dbQuery, function (err, result) {
             if (err) throw err;
             //console.log(result);
