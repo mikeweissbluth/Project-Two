@@ -355,6 +355,10 @@ function initMap() {
       $.post("/api/neighbor/", neighborPlusOne, function() {
         // window.location.href = "/";
       });
+      $.get("/api/neighbor/" + facility_id, function(data) {
+        console.log("Neighbors data: " + data);
+        $(".js-neighborcount").text(data);
+      });
     };
     // This is the array that will store all of our facilities that our API brings back.
     var facilities = [];
@@ -395,7 +399,8 @@ function initMap() {
                 var fac_name = data[i].FACILITY_NAME;
                 var fac_lat = parseFloat(data[i].LATITUDE);
                 var fac_lon = parseFloat(data[i].LONGITUDE);
-                var fac_chem = data[i].CHEM_NAME;
+                var fac_chem = data[i].CHEM_NAME_FOR_URL;
+                var fac_chem_url = data[i].HSDB_URL;
                 var fac_carcinogenic = data[i].CARCINOGEN;
                 var fac_neighbors;  
                 // Function to return the chemical array list as a string. If it's not a string, it will say 'None reported'.
@@ -408,6 +413,17 @@ function initMap() {
                     }
                 }
 
+                const chem_objects = fac_chem.map((key, i ) => ({ title: key, url: fac_chem_url[i] }));
+
+                function createUrls(bigData) {
+                  var urlList = [];
+                  for (s = 0; s < bigData.length; s++) {
+                    urlList.push('<a href="' + bigData[s].url + '" target="_blank">' + bigData[s].title + ', </a>');
+                  }
+                  console.log(urlList);
+                  var urlListStr = urlList.join("");
+                  return urlListStr;
+                };
                 
 
                 // Console Logs for testing:
@@ -427,7 +443,7 @@ function initMap() {
 
                 // console.log("Facilities currently are: " + facilities);
 
-                var popUpContent = '<h1>' + fac_name + '</h1><br>'+ '<h4>Chemicals:</h4><p>' + fac_chem_str() + '</p>' + '<h4>Any Chemicals Known Carcinogenic?</h4><br><p>' + fac_carcinogenic + '</p><br><h4>Facility ID:</h4><br><p>' + fac_id + '</p><br><h4>How many neighbors:</h4><br><p>' + '</p><br><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes?</button>';
+                var popUpContent = '<h1>' + fac_name + '</h1>'+ '<h4>Chemicals:</h4><p>' + createUrls(chem_objects)  + '</p>' + '<h4>Any Chemicals Known Carcinogenic?</h4><p>' + fac_carcinogenic + '</p><h4>Facility ID:</h4><p>' + fac_id + '</p><h4>How many neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
 
                 
                 var infoWindow = new google.maps.InfoWindow({
@@ -445,11 +461,17 @@ function initMap() {
                 });
 
                 //creating an on-click functionality that removes the pop-up window when the facility is clicked a second time. (
-                  let popUpContent= true;
+                  // let popUpContent= true;
 
                 
                 var activeInfoWindow;
                 marker.addListener('click', function(e) {
+
+                    $.get("/api/neighbor/" + fac_id, function(data) {
+                      console.log("Neighbors data: " + data);
+                      $(".js-neighborcount").text(data);
+                      // fac_neighbors = data;
+                    });
                   
                     if (activeInfoWindow) { activeInfoWindow.close();}
                     infoWindow.open(map, marker);
