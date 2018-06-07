@@ -353,7 +353,11 @@ function initMap() {
 
       // alert('You updated a neighbor for: ' + facility_id);
       $.post("/api/neighbor/", neighborPlusOne, function() {
-        // window.location.href = "/";
+        
+      });
+      $.get("/api/neighbor/" + facility_id, function(data) {
+        console.log("Neighbors data: " + data);
+        $(".js-neighborcount").text(data);
       });
     };
     // This is the array that will store all of our facilities that our API brings back.
@@ -383,7 +387,9 @@ function initMap() {
                 var fac_chem = data[i].CHEM_NAME_FOR_URL;
                 var fac_chem_url = data[i].HSDB_URL;
                 var fac_carcinogenic = data[i].CARCINOGEN;
-                var fac_neighbors; 
+                var fac_neighbors = 0; 
+
+                
               
                 // Function to return the chemical array list as a string. If it's not a string, it will say 'None reported'.
                 function fac_chem_str(prop) {
@@ -431,7 +437,9 @@ function initMap() {
                 // console.log("Facilities currently are: " + facilities);
 
                 // The HTML & CSS content for the GMaps Marker Info Window/Pop up.
-                var popUpContent = '<h1>' + fac_name + '</h1><br>'+ '<h4>Chemicals:</h4><p>' + createUrls(chem_objects)  + '</p>' + '<h4>Any Chemicals Known Carcinogenic?</h4><br><p>' + fac_carcinogenic + '</p><br><h4>Facility ID:</h4><br><p>' + fac_id + '</p><br><h4>How many neighbors:</h4><br><p>' + '</p><br><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes?</button>';
+                var popUpContent = '<h1>' + fac_name + '</h1>'+ '<h4>Chemicals:</h4><p>' + createUrls(chem_objects)  + '</p>' + '<h4>Any Chemicals Known Carcinogenic?</h4><p>' + fac_carcinogenic + '</p><h4>Facility ID:</h4><p>' + fac_id + '</p><h4>How many neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
+
+                
 
                 // Actually create the Google info window and store it in a variable called infoWindow.
                 var infoWindow = new google.maps.InfoWindow({
@@ -448,6 +456,12 @@ function initMap() {
                     // zIndex: facility[3]
                 });
                 marker.addListener('click', function() {
+
+                    $.get("/api/neighbor/" + fac_id, function(data) {
+                      console.log("Neighbors data: " + data);
+                      $(".js-neighborcount").text(data);
+                      // fac_neighbors = data;
+                    });
                   
                     infoWindow.open(map, marker);
                 });
