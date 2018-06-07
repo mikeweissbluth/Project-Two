@@ -468,7 +468,7 @@ function fac_chem_str(chemNameForUrl) {
 
                 // console.log("Facilities currently are: " + facilities);
 
-                var popUpContent = '<h1>' + fac_name + '</h1>'+ '<h4>Chemicals:</h4><p>' + createUrls(chem_objects)  + '</p>' + '<h4>Any Chemicals Known Carcinogenic?</h4><p>' + fac_carcinogenic + '</p><h4>Facility ID:</h4><p>' + fac_id + '</p><h4>How many neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
+                var popUpContent = '<h1>' + fac_name + '</h1> <h4>Chemicals:</h4><p>' + createUrls(chem_objects)  + '</p> <h4>Any Chemicals Known Carcinogens?</h4><p>' + fac_carcinogenic + '</p><h4>Facility ID:</h4><p>' + fac_id + '</p><h4>How many neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
 
                 
                 var infoWindow = new google.maps.InfoWindow({
