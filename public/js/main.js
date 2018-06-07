@@ -388,6 +388,16 @@ function initMap() {
         type: 'circle'
     };
 
+// Function to return the chemical array list as a string. If it's not a string, it will say 'None reported'.
+function fac_chem_str(chemNameForUrl) {
+  if (chemNameForUrl) {
+      return chemNameForUrl.toString();
+  }
+  else {
+      return "None reported";
+  }
+}
+
     // This is our actual jQuery $get API call to our database. This does all the heavy-lifting.
     $.get("/api/all", function(data) {
 
@@ -403,15 +413,7 @@ function initMap() {
                 var fac_chem_url = data[i].HSDB_URL;
                 var fac_carcinogenic = data[i].CARCINOGEN;
                 var fac_neighbors;  
-                // Function to return the chemical array list as a string. If it's not a string, it will say 'None reported'.
-                function fac_chem_str() {
-                    if (fac_chem) {
-                        return fac_chem.toString();
-                    }
-                    else {
-                        return "None reported";
-                    }
-                }
+                
 
                 const chem_objects = fac_chem.map((key, i ) => ({ title: key, url: fac_chem_url[i] }));
 
@@ -430,7 +432,7 @@ function initMap() {
                 console.log("Facilities Name: ", fac_name);
                 // console.log("Facilities Latitude: ", fac_lat);
                 // console.log("Facilities Longitude: ", fac_lon);
-                console.log(fac_chem_str());
+                console.log(fac_chem_str(fac_chem));
                 // console.log(typeof fac_chem);
 
                 // An array to store name, lat & lon for each facility in our db.
