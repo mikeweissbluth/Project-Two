@@ -14,12 +14,13 @@ module.exports = function(app) {
  
   // Get route for retrieving a single post
   app.get("/api/neighbor/:locationId", function(req, res) {
-    db.Neighbor.findAll({
+    db.Neighbor.sum('yes', {
       where: {
         locationId: req.params.locationId
       }
     })
       .then(function(dbNeighbor) {
+        console.log("sum by site " + dbNeighbor);
         res.json(dbNeighbor);
       });
   });
