@@ -445,7 +445,7 @@ function initMap() {
                 });
 
                 //creating an on-click functionality that removes the pop-up window when the facility is clicked a second time. (
-                  let popUpContent= true;
+                  // let popUpContent= true;
 
                 
                 var activeInfoWindow;
