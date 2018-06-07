@@ -429,6 +429,7 @@ function initMap() {
 
                 var popUpContent = '<h1>' + fac_name + '</h1><br>'+ '<h4>Chemicals:</h4><p>' + fac_chem_str() + '</p>' + '<h4>Any Chemicals Known Carcinogenic?</h4><br><p>' + fac_carcinogenic + '</p><br><h4>Facility ID:</h4><br><p>' + fac_id + '</p><br><h4>How many neighbors:</h4><br><p>' + '</p><br><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes?</button>';
 
+                
                 var infoWindow = new google.maps.InfoWindow({
                     content: popUpContent
                 });
@@ -442,9 +443,23 @@ function initMap() {
                     title: fac_name,
                     // zIndex: facility[3]
                 });
-                marker.addListener('click', function() {
+
+                //creating an on-click functionality that removes the pop-up window when the facility is clicked a second time. (
+                  let popUpContent= true;
+                  
+                )
+                var activeInfoWindow;
+                marker.addListener('click', function(e) {
+                  
+                    if (activeInfoWindow) { activeInfoWindow.close();}
                     infoWindow.open(map, marker);
+                    activeInfoWindow = infoWindow;
+                
+                  
                 });
+                
+                
+            
             }
             createMarkerPlumbing();
         }
