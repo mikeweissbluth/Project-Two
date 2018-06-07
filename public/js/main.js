@@ -359,63 +359,66 @@ function initMap() {
     // This is the array that will store all of our facilities that our API brings back.
     var facilities = [];
     
+    // Main function that adds markers to the map.
     function setMarkers(map) {
-        // Adds markers to the map.
-        // Marker sizes are expressed as a Size of X,Y where the origin of the image
-        // (0,0) is located in the top left of the image.
-        // Origins, anchor positions and coordinates of the marker increase in the X
-        // direction to the right and in the Y direction down.
 
-    // This is our SVG for the orange plumes for facilities on the map.
-    //   var image = {
-    //     path: "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
-    //     fillColor: '#FF7b00',
-    //     fillOpacity: .9,
-    //     anchor: new google.maps.Point(0,0),
-    //     strokeWeight: 0,
-    //     scale: 1
-    //   };
-
-    // Shapes define the clickable region of the icon. The type defines an HTML
-    // <area> element 'poly' which traces out a polygon as a series of X,Y points.
-    // The final coordinate closes the poly by connecting to the first coordinate.
+    // Clickable region for our GMaps markers.
     var shape = {
         coords: [0, 0, 100],
         type: 'circle'
     };
 
-    // This is our actual jQuery $get API call to our database. This does all the heavy-lifting.
+    // This is our actual jQuery $get API call to our database -- This does all the heavy-lifting.
     $.get("/api/all", function(data) {
 
+        // for (var i = 0; i < data.length; i++) {
         for (var i = 0; i < data.length; i++) {
-            // Wrap the marker creation in a function so everything stays in scope.
+            // Wrap the marker creation in a function, called createMarkerPlumbing, so everything stays in scope.
             function createMarkerPlumbing() { 
                 // Variables to store info from our API call.
                 var fac_id = data[i].FACILITY_ID;
                 var fac_name = data[i].FACILITY_NAME;
                 var fac_lat = parseFloat(data[i].LATITUDE);
                 var fac_lon = parseFloat(data[i].LONGITUDE);
-                var fac_chem = data[i].CHEM_NAME;
+                var fac_chem = data[i].CHEM_NAME_FOR_URL;
+                var fac_chem_url = data[i].HSDB_URL;
                 var fac_carcinogenic = data[i].CARCINOGEN;
-                var fac_neighbors;  
+                var fac_neighbors; 
+              
                 // Function to return the chemical array list as a string. If it's not a string, it will say 'None reported'.
-                function fac_chem_str() {
-                    if (fac_chem) {
-                        return fac_chem.toString();
+                function fac_chem_str(prop) {
+                    if (prop) {
+                        return prop.toString();
                     }
                     else {
                         return "None reported";
                     }
                 }
 
+                const chem_objects = fac_chem.map((key, i ) => ({ title: key, url: fac_chem_url[i] }));
+
+                function createUrls(bigData) {
+                  var urlList = [];
+                  for (s = 0; s < bigData.length; s++) {
+                    urlList.push('<a href="' + bigData[s].url + '" target="_blank">' + bigData[s].title + ', </a>');
+                  }
+                  console.log(urlList);
+                  var urlListStr = urlList.join("");
+                  return urlListStr;
+                };
                 
+
+                // console.log(chem_objects);
 
                 // Console Logs for testing:
                 console.log("Facilities Name: ", fac_name);
                 // console.log("Facilities Latitude: ", fac_lat);
                 // console.log("Facilities Longitude: ", fac_lon);
-                console.log(fac_chem_str());
-                // console.log(typeof fac_chem);
+                // console.log(fac_chem_str());
+                // console.log(fac_chem);
+                // console.log(fac_chem_url);
+                // console.log(chem_objects);
+                // createLinks(chem_objects);
 
                 // An array to store name, lat & lon for each facility in our db.
                 var new_facility = [];
@@ -427,8 +430,10 @@ function initMap() {
 
                 // console.log("Facilities currently are: " + facilities);
 
-                var popUpContent = '<h1>' + fac_name + '</h1><br>'+ '<h4>Chemicals:</h4><p>' + fac_chem_str() + '</p>' + '<h4>Any Chemicals Known Carcinogenic?</h4><br><p>' + fac_carcinogenic + '</p><br><h4>Facility ID:</h4><br><p>' + fac_id + '</p><br><h4>How many neighbors:</h4><br><p>' + '</p><br><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes?</button>';
+                // The HTML & CSS content for the GMaps Marker Info Window/Pop up.
+                var popUpContent = '<h1>' + fac_name + '</h1><br>'+ '<h4>Chemicals:</h4><p>' + createUrls(chem_objects)  + '</p>' + '<h4>Any Chemicals Known Carcinogenic?</h4><br><p>' + fac_carcinogenic + '</p><br><h4>Facility ID:</h4><br><p>' + fac_id + '</p><br><h4>How many neighbors:</h4><br><p>' + '</p><br><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes?</button>';
 
+                // Actually create the Google info window and store it in a variable called infoWindow.
                 var infoWindow = new google.maps.InfoWindow({
                     content: popUpContent
                 });
@@ -443,6 +448,7 @@ function initMap() {
                     // zIndex: facility[3]
                 });
                 marker.addListener('click', function() {
+                  
                     infoWindow.open(map, marker);
                 });
             }
