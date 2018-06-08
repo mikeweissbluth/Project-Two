@@ -10,11 +10,13 @@ body{
 .clear { clear: both; }
 
 #header {
-  width: 100%;
+  background-color: #0e1626;
   /* background: url('../img/header-bg.png'); */
   height: 80px;
+  padding-bottom: 10px;
+  padding-top: 20px;
   position: fixed;
-  margin-top: 30px;
+  width: 100%;
   z-index: 99999;
 }
 
