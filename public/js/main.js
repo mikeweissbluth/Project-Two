@@ -405,7 +405,7 @@ function initMap() {
 
     // Function to create the URLs for the compliance report links.
     function complianceURL(name, url) {
-      return '<a href="' + url + '" target="_blank">' + name + ' </a>'
+      return '<a href="' + url + '" target="_blank">' + ' <i class="far fa-3x fa-folder-open"></i></a>'
     }
 
     // This is to create a linkable list of chemical names in our pop up window.
@@ -461,7 +461,7 @@ function initMap() {
                 // Add the new facility to our big facilities array - the facilities array will contain all of our facilities.
                 facilities.push(new_facility);
 
-                var popUpContent = '<h1>' + fac_name + '</h1> <h4>Chemicals:</h4><p>' + createUrls(createChemObjects(fac_chem, fac_chem_url, chem_objects)) + '</p> <h4>Any Chemicals Known Carcinogens?</h4><p>' + fac_carcinogenic + '</p><h4>Facility ID:</h4><p>' + complianceURL(fac_id, fac_compliance_url) + '</p><h4>How many neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
+                var popUpContent = '<h1>' + fac_name + '</h1> <h4>Chemicals:</h4><p>' + createUrls(createChemObjects(fac_chem, fac_chem_url, chem_objects)) + '</p> <h4>Any Chemicals Known Carcinogens?</h4><p>' + fac_carcinogenic + '</p><h4>Compliance History:</h4><p>' + complianceURL(fac_id, fac_compliance_url) + '</p><h4>How many concerned neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button class="button" id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
 
                 // Creates the info window
                 var infoWindow = new google.maps.InfoWindow({

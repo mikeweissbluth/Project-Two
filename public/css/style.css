@@ -15,7 +15,7 @@ body{
   height: 80px;
   padding-bottom: 10px;
   padding-top: 20px;
-  position: fixed;
+  position: fixed; 
   width: 100%;
   z-index: 99999;
 }
@@ -113,7 +113,7 @@ h4{
 .gm-style-iw{
     border-top: 10px solid orange;
 }
-button {
+.button {
     padding: 6px 24px;
     color: white;
     font-weight: bold;
@@ -123,4 +123,9 @@ button {
     border: none;
     display: block;
     
+}
+
+.button:hover {
+    background-color: rgb(189, 124, 3);
+    cursor: pointer;
 }
