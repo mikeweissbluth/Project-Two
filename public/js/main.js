@@ -411,15 +411,29 @@ function initMap() {
         type: 'circle'
     };
 
-// Function to return the chemical array list as a string. If it's not a string, it will say 'None reported'.
-function fac_chem_str(chemNameForUrl) {
-  if (chemNameForUrl) {
-      return chemNameForUrl.toString();
-  }
-  else {
-      return "None reported";
-  }
-}
+    // Function to return the chemical array list as a string. If it's not a string, it will say 'None reported'.
+    function fac_chem_str(chemNameForUrl) {
+      if (chemNameForUrl) {
+          return chemNameForUrl.toString();
+      }
+      else {
+          return "None reported";
+      }
+    }
+
+    function complianceURL(name, url) {
+      return '<a href="' + url + '" target="_blank">' + name + ' </a>'
+    }
+
+    function createUrls(bigData) {
+      var urlList = [];
+      for (s = 0; s < bigData.length; s++) {
+        urlList.push('<a href="' + bigData[s].url + '" target="_blank">' + bigData[s].title + ', </a>');
+      }
+      // console.log(urlList);
+      var urlListStr = urlList.join("");
+      return urlListStr;
+    };
 
     // This is our actual jQuery $get API call to our database. This does all the heavy-lifting.
     $.get("/api/all", function(data) {
@@ -434,28 +448,20 @@ function fac_chem_str(chemNameForUrl) {
                 var fac_lon = parseFloat(data[i].LONGITUDE);
                 var fac_chem = data[i].CHEM_NAME_FOR_URL;
                 var fac_chem_url = data[i].HSDB_URL;
+                var fac_compliance_url = data[i].FACILITY_COMPLIANCE_REPORT_URL;
                 var fac_carcinogenic = data[i].CARCINOGEN;
                 var fac_neighbors;  
                 
 
                 const chem_objects = fac_chem.map((key, i ) => ({ title: key, url: fac_chem_url[i] }));
 
-                function createUrls(bigData) {
-                  var urlList = [];
-                  for (s = 0; s < bigData.length; s++) {
-                    urlList.push('<a href="' + bigData[s].url + '" target="_blank">' + bigData[s].title + ', </a>');
-                  }
-                  console.log(urlList);
-                  var urlListStr = urlList.join("");
-                  return urlListStr;
-                };
-                
-
+                  console.log("Compliance test:");
+                  console.log(complianceURL(fac_id, fac_compliance_url));
                 // Console Logs for testing:
-                console.log("Facilities Name: ", fac_name);
+                // console.log("Facilities Name: ", fac_name);
                 // console.log("Facilities Latitude: ", fac_lat);
                 // console.log("Facilities Longitude: ", fac_lon);
-                console.log(fac_chem_str(fac_chem));
+                // console.log(fac_chem_str(fac_chem));
                 // console.log(typeof fac_chem);
 
                 // An array to store name, lat & lon for each facility in our db.
@@ -468,7 +474,7 @@ function fac_chem_str(chemNameForUrl) {
 
                 // console.log("Facilities currently are: " + facilities);
 
-                var popUpContent = '<h1>' + fac_name + '</h1> <h4>Chemicals:</h4><p>' + createUrls(chem_objects)  + '</p> <h4>Any Chemicals Known Carcinogens?</h4><p>' + fac_carcinogenic + '</p><h4>Facility ID:</h4><p>' + fac_id + '</p><h4>How many neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
+                var popUpContent = '<h1>' + fac_name + '</h1> <h4>Chemicals:</h4><p>' + createUrls(chem_objects)  + '</p> <h4>Any Chemicals Known Carcinogens?</h4><p>' + fac_carcinogenic + '</p><h4>Facility ID:</h4><p>' + complianceURL(fac_id, fac_compliance_url) + '</p><h4>How many neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
 
                 
                 var infoWindow = new google.maps.InfoWindow({
