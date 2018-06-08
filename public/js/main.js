@@ -430,6 +430,15 @@ function initMap() {
       return objects;
     };
 
+    function yesOrNo(answer) {
+      if (answer == 'N') {
+        return "No";
+      }
+      if (answer == 'Y') {
+        return "Yes";
+      }
+    }
+
     // This is our actual jQuery $get API call to our database. This does all the heavy-lifting.
     $.get("/api/all", function(data) {
 
@@ -461,7 +470,7 @@ function initMap() {
                 // Add the new facility to our big facilities array - the facilities array will contain all of our facilities.
                 facilities.push(new_facility);
 
-                var popUpContent = '<h1>' + fac_name + '</h1> <h4>Chemicals:</h4><p>' + createUrls(createChemObjects(fac_chem, fac_chem_url, chem_objects)) + '</p> <h4>Any Chemicals Known Carcinogens?</h4><p>' + fac_carcinogenic + '</p><h4>Compliance History:</h4><p>' + complianceURL(fac_id, fac_compliance_url) + '</p><h4>How many concerned neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button class="button" id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
+                var popUpContent = '<h1>' + fac_name + '</h1> <h4>Chemicals:</h4><p>' + createUrls(createChemObjects(fac_chem, fac_chem_url, chem_objects)) + '</p> <h4>Any Chemicals Known Carcinogens?</h4><p>' + yesOrNo(fac_carcinogenic) + '</p><h4>Compliance History:</h4><p>' + complianceURL(fac_id, fac_compliance_url) + '</p><h4>How many concerned neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button class="button" id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
 
                 // Creates the info window
                 var infoWindow = new google.maps.InfoWindow({
