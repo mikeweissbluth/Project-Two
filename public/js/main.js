@@ -1,4 +1,4 @@
-
+    // This is for the slides layout.
     $('a[href*=#]').each(function() {
         if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
             && location.hostname == this.hostname
@@ -363,8 +363,6 @@ function initMap() {
   setMarkers(map);
 }
 
-  
-
     // Function to update the neighbors
     function updateNeighbor(facility_id) {
       event.preventDefault();
@@ -374,7 +372,6 @@ function initMap() {
         no: 0
       }
 
-      // alert('You updated a neighbor for: ' + facility_id);
       $.post("/api/neighbor/", neighborPlusOne, function() {
         // window.location.href = "/";
       });
@@ -383,29 +380,14 @@ function initMap() {
         $(".js-neighborcount").text(data);
       });
     };
+
     // This is the array that will store all of our facilities that our API brings back.
     var facilities = [];
     
+    // Adds markers to the map.
     function setMarkers(map) {
-        // Adds markers to the map.
-        // Marker sizes are expressed as a Size of X,Y where the origin of the image
-        // (0,0) is located in the top left of the image.
-        // Origins, anchor positions and coordinates of the marker increase in the X
-        // direction to the right and in the Y direction down.
 
-    // This is our SVG for the orange plumes for facilities on the map.
-    //   var image = {
-    //     path: "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
-    //     fillColor: '#FF7b00',
-    //     fillOpacity: .9,
-    //     anchor: new google.maps.Point(0,0),
-    //     strokeWeight: 0,
-    //     scale: 1
-    //   };
-
-    // Shapes define the clickable region of the icon. The type defines an HTML
-    // <area> element 'poly' which traces out a polygon as a series of X,Y points.
-    // The final coordinate closes the poly by connecting to the first coordinate.
+    // Shapes define the clickable region of the icon or marker on our map.
     var shape = {
         coords: [0, 0, 100],
         type: 'circle'
@@ -421,10 +403,12 @@ function initMap() {
       }
     }
 
+    // Function to create the URLs for the compliance report links.
     function complianceURL(name, url) {
       return '<a href="' + url + '" target="_blank">' + name + ' </a>'
     }
 
+    // This is to create a linkable list of chemical names in our pop up window.
     function createUrls(bigData) {
       var urlList = [];
       for (s = 0; s < bigData.length; s++) {
@@ -433,6 +417,17 @@ function initMap() {
       // console.log(urlList);
       var urlListStr = urlList.join("");
       return urlListStr;
+    };
+
+    // This is to return an object, but if it's null, it will say 'None Reported'.
+    function createChemObjects(chem_array, chem_url, objects) {
+      if (chem_array) {
+        objects = chem_array.map((key, i) => ({ title: key, url: chem_url[i]}));
+      }
+      else {
+        objects = {title: "None Reported", url: "#"};
+      }
+      return objects;
     };
 
     // This is our actual jQuery $get API call to our database. This does all the heavy-lifting.
@@ -452,31 +447,23 @@ function initMap() {
                 var fac_carcinogenic = data[i].CARCINOGEN;
                 var fac_neighbors;  
                 
+                let chem_objects;
 
-                const chem_objects = fac_chem.map((key, i ) => ({ title: key, url: fac_chem_url[i] }));
-
-                  console.log("Compliance test:");
-                  console.log(complianceURL(fac_id, fac_compliance_url));
-                // Console Logs for testing:
-                // console.log("Facilities Name: ", fac_name);
-                // console.log("Facilities Latitude: ", fac_lat);
-                // console.log("Facilities Longitude: ", fac_lon);
-                // console.log(fac_chem_str(fac_chem));
-                // console.log(typeof fac_chem);
+                // createChemObjects(fac_chem, fac_chem_url, chem_objects);
+                console.log('chem_objects is:');
+                console.log(createUrls(createChemObjects(fac_chem, fac_chem_url, chem_objects)));
 
                 // An array to store name, lat & lon for each facility in our db.
                 var new_facility = [];
                 // Add the current facility data to that empty array.
                 new_facility.push(fac_name, fac_lat, fac_lon);
-                // console.log("New Facility: " + new_facility);
+
                 // Add the new facility to our big facilities array - the facilities array will contain all of our facilities.
                 facilities.push(new_facility);
 
-                // console.log("Facilities currently are: " + facilities);
+                var popUpContent = '<h1>' + fac_name + '</h1> <h4>Chemicals:</h4><p>' + createUrls(createChemObjects(fac_chem, fac_chem_url, chem_objects)) + '</p> <h4>Any Chemicals Known Carcinogens?</h4><p>' + fac_carcinogenic + '</p><h4>Facility ID:</h4><p>' + complianceURL(fac_id, fac_compliance_url) + '</p><h4>How many neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
 
-                var popUpContent = '<h1>' + fac_name + '</h1> <h4>Chemicals:</h4><p>' + createUrls(chem_objects)  + '</p> <h4>Any Chemicals Known Carcinogens?</h4><p>' + fac_carcinogenic + '</p><h4>Facility ID:</h4><p>' + complianceURL(fac_id, fac_compliance_url) + '</p><h4>How many neighbors:</h4><span class="js-neighborcount">' + fac_neighbors + '</span><p>' + '</p><h4>Are you a neighbor?</h4><br><button id=' + fac_id + ' onclick="updateNeighbor(this.id)">Yes</button>';
-
-                
+                // Creates the info window
                 var infoWindow = new google.maps.InfoWindow({
                     content: popUpContent
                 });
@@ -492,10 +479,11 @@ function initMap() {
                 });
 
                 //creating an on-click functionality that removes the pop-up window when the facility is clicked a second time. (
-                  // let popUpContent= true;
+                // let popUpContent= true;
 
-                
                 var activeInfoWindow;
+
+                // This adds the click listener to the markers on the map
                 marker.addListener('click', function(e) {
 
                     $.get("/api/neighbor/" + fac_id, function(data) {
